@@ -1,4 +1,4 @@
-from labyrinth import Labyrinth
+from .labyrinth import Labyrinth
 
 class LabyrinthSearchProblem:
     def __init__(self, labyrinth):

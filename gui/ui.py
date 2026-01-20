@@ -313,7 +313,7 @@ def seleccionar_laberinto_moderno(screen):
     fuente_titulo = pygame.font.SysFont("Arial", 28, bold=True)
     fuente_btn = pygame.font.SysFont("Arial", 20)
 
-    archivos = os.listdir("laberintos")
+    archivos = os.listdir(os.path.join("data", "mazes"))
 
     # Crear botones para cada laberinto
     botones = []

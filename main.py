@@ -1,22 +1,23 @@
 import pygame
 import os
 
-# Clases del laberinto
-from labyrinth import Labyrinth
-from graphics import LabyrinthGraphics
-from searchAgents import LabyrinthSearchProblem
+# Clases del laberinto (desde src/)
+from src.labyrinth import Labyrinth
+from src.search_agents import LabyrinthSearchProblem
 
-# Algoritmos de búsqueda
-from search import (
+# Algoritmos de búsqueda (desde src/)
+from src.search import (
     depth_first_search,
     breadth_first_search,
     uniform_cost_search,
     a_star_search
 )
 
-# Funciones propias (ya separadas)
-from evaluacion import evaluar_algoritmo, elegir_mejor_algoritmo
-from ui import (
+# Utilidades (desde utils/)
+from utils.evaluacion import evaluar_algoritmo, elegir_mejor_algoritmo
+
+# Interfaz gráfica (desde gui/)
+from gui.ui import (
     Boton,
     BotonModerno,
     Dropdown,
@@ -29,7 +30,8 @@ from ui import (
     seleccionar_laberinto_moderno,
     dibujar_fondo_degradado
 )
-from graficas import dibujar_graficas_pygame
+from gui.graphics import LabyrinthGraphics
+from gui.charts import dibujar_graficas_pygame
 
 # --------------------------------------------------
 # Selección de laberinto
@@ -111,7 +113,7 @@ def main():
                 continue
 
             # Cargar laberinto seleccionado
-            lab = Labyrinth(os.path.join("laberintos", archivo))
+            lab = Labyrinth(os.path.join("data", "mazes", archivo))
             problem = LabyrinthSearchProblem(lab)
 
             # Ejecutar algoritmos
@@ -228,7 +230,7 @@ def main():
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if boton_volver.click(event.pos):
-                            estado = MENU
+                            estado = SELECCION
                             viendo = False
                         if boton_grafica.click(event.pos):
                             estado = GRAFICA

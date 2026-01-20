@@ -18,11 +18,16 @@ from search import (
 from evaluacion import evaluar_algoritmo, elegir_mejor_algoritmo
 from ui import (
     Boton,
+    BotonModerno,
     Dropdown,
     MENU,
     SELECCION,
     RESULTADOS,
-    GRAFICA
+    GRAFICA,
+    COLORES,
+    menu_principal_moderno,
+    seleccionar_laberinto_moderno,
+    dibujar_fondo_degradado
 )
 from graficas import dibujar_graficas_pygame
 
@@ -31,60 +36,16 @@ from graficas import dibujar_graficas_pygame
 # --------------------------------------------------
 
 def seleccionar_laberinto(screen):
-    fuente = pygame.font.SysFont(None, 32)
-    archivos = os.listdir("laberintos")
-
-    botones = []
-    y = 150
-    for archivo in archivos:
-        botones.append(
-            Boton(archivo, 250, y, 300, 40, (180, 180, 180), archivo)
-        )
-        y += 60
-
-    while True:
-        screen.fill((200, 200, 200))
-
-        for boton in botones:
-            boton.dibujar(screen, fuente)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return None
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                for boton in botones:
-                    if boton.click(event.pos):
-                        return boton.accion
-
-        pygame.display.flip()
+    """Wrapper para la función moderna de selección"""
+    return seleccionar_laberinto_moderno(screen)
 
 # --------------------------------------------------
 # Menú principal
 # --------------------------------------------------
 
 def menu_principal(screen):
-    fuente = pygame.font.SysFont(None, 40)
-
-    boton_iniciar = Boton("Iniciar", 300, 200, 200, 60, (0, 200, 0), "iniciar")
-    boton_salir = Boton("Salir", 300, 300, 200, 60, (200, 0, 0), "salir")
-
-    while True:
-        screen.fill((220, 220, 220))
-
-        boton_iniciar.dibujar(screen, fuente)
-        boton_salir.dibujar(screen, fuente)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return "salir"
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if boton_iniciar.click(event.pos):
-                    return "iniciar"
-                if boton_salir.click(event.pos):
-                    return "salir"
-
-        pygame.display.flip()
+    """Wrapper para la función moderna del menú"""
+    return menu_principal_moderno(screen)
 
 # --------------------------------------------------
 # Mostrar métricas de los algoritmos
@@ -145,6 +106,9 @@ def main():
             archivo = seleccionar_laberinto(screen)
             if archivo is None:
                 break
+            if archivo == "volver":
+                estado = MENU
+                continue
 
             # Cargar laberinto seleccionado
             lab = Labyrinth(os.path.join("laberintos", archivo))

@@ -3,6 +3,7 @@
 venv/
 env/
 ENV/
+.idea/
 
 # Archivos compilados de Python
 __pycache__/

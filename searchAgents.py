@@ -8,21 +8,21 @@ class LabyrinthSearchProblem:
         self.labyrinth = labyrinth
 
     def get_start_state(self):
-        """Retorna la posición inicial 'S'[cite: 45]."""
+        """Retorna la posición inicial 'S'."""
         return self.labyrinth.start_pos
 
     def is_goal_state(self, state):
-        """Verifica si el estado es la meta 'G'[cite: 46]."""
+        """Verifica si el estado es la meta 'G'."""
         return self.labyrinth.is_goal(state)
 
     def get_successors(self, state):
         """
         Retorna una lista de sucesores.
-        Cada sucesor es una tupla: (nueva_posicion, accion, costo)[cite: 21].
+        Cada sucesor es una tupla: (nueva_posicion, accion, costo).
         """
         successors = []
         for next_state in self.labyrinth.get_neighbors(state):
-            # Calculamos el costo según el tipo de terreno (1 o 2) [cite: 21]
+            # Calculamos el costo según el tipo de terreno (1 o 2).
             cost = self.labyrinth.get_cost(next_state)
             # En esta fase inicial, la 'acción' puede ser simplemente la coordenada
             successors.append((next_state, next_state, cost))
@@ -33,5 +33,5 @@ class SearchAgent:
         self.algorithm = algorithm
 
     def get_plan(self, problem):
-        """Utiliza el algoritmo para planificar la ruta desde S hasta G[cite: 42]."""
+        """Utiliza el algoritmo para planificar la ruta desde S hasta G."""
         return self.algorithm(problem)

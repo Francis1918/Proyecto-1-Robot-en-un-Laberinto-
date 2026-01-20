@@ -198,10 +198,10 @@ def main():
                         "A*":  (255, 255, 0)
                     }[seleccion]
 
-                    # 🟢 Pintar TODA la ruta
+                    # Pintar TODA la ruta
                     gui.draw_path(ruta_activa, color)
 
-                    # 🤖 Animar robot SOBRE la ruta
+                    # Animar robot SOBRE la ruta
                     if ruta_activa and indice_ruta < len(ruta_activa):
                         gui.draw_robot(ruta_activa[indice_ruta])
                         indice_ruta += 1
@@ -238,7 +238,7 @@ def main():
                             return
 
                 pygame.display.flip()
-                clock.tick(10)  # controla velocidad del robot
+                clock.tick(10)  
                 seleccion_anterior = seleccion
 
         # -------------------------
@@ -269,12 +269,8 @@ def main():
                 pygame.display.flip()
                 clock.tick(60)
 
-        
-
 
     pygame.quit()
-
-
     
 
 if __name__ == "__main__":

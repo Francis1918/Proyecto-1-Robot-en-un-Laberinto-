@@ -22,7 +22,7 @@ class Labyrinth:
 
     def is_wall(self, state):
         """
-        Verifica si una posición es un obstáculo[cite: 26, 46].
+        Verifica si una posición es un obstáculo
         """
         r, c = state
         return self.grid[r][c] == '#'
@@ -35,7 +35,7 @@ class Labyrinth:
 
     def get_cost(self, state):
         """
-        Define el costo de cada celda según el tipo de terreno[cite: 21].
+        Define el costo de cada celda según el tipo de terreno.
         Terreno plano (.) = 1, Terreno empinado (2) = 2.
         """
         r, c = state

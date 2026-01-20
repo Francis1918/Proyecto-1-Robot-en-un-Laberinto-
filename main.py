@@ -1,137 +1,34 @@
+import pygame
+import os
+
+# Clases del laberinto
 from labyrinth import Labyrinth
 from graphics import LabyrinthGraphics
 from searchAgents import LabyrinthSearchProblem
+
+# Algoritmos de búsqueda
 from search import (
     depth_first_search,
     breadth_first_search,
     uniform_cost_search,
     a_star_search
 )
-import pygame
-import os
-import time
-import matplotlib.pyplot as plt
 
+# Funciones propias (ya separadas)
+from evaluacion import evaluar_algoritmo, elegir_mejor_algoritmo
+from ui import (
+    Boton,
+    Dropdown,
+    MENU,
+    SELECCION,
+    RESULTADOS,
+    GRAFICA
+)
+from graficas import dibujar_graficas_pygame
 
-def evaluar_algoritmo(nombre, algoritmo, problem, lab):
-    """
-    Ejecuta un algoritmo de búsqueda y mide su rendimiento.
-    """
-    inicio = time.perf_counter()
-    ruta = algoritmo(problem)
-    fin = time.perf_counter()
-
-    tiempo = fin - inicio
-    pasos = len(ruta)
-
-    # Calcular costo total del camino
-    costo = 0
-    for state in ruta:
-        costo += lab.get_cost(state)
-
-    return {
-        "algoritmo": nombre,
-        "tiempo": tiempo,
-        "pasos": pasos,
-        "costo": costo,
-        "ruta": ruta
-    }
-
-def elegir_mejor_algoritmo(resultados):
-    max_t = max(r["tiempo"] for r in resultados)
-    max_p = max(r["pasos"] for r in resultados)
-    max_c = max(r["costo"] for r in resultados)
-
-    for r in resultados:
-        r["score"] = (
-            r["tiempo"] / max_t +
-            r["pasos"] / max_p +
-            r["costo"] / max_c
-        )
-
-    return min(resultados, key=lambda r: r["score"])
-
-
-MENU = "menu"
-SELECCION = "seleccion"
-RESULTADOS = "resultados"
-GRAFICA = "grafica"
-class Boton:
-    def __init__(self, texto, x, y, w, h, color, accion):
-        self.rect = pygame.Rect(x, y, w, h)
-        self.texto = texto
-        self.color = color
-        self.accion = accion
-
-    def dibujar(self, screen, fuente):
-        pygame.draw.rect(screen, self.color, self.rect)
-        txt = fuente.render(self.texto, True, (0, 0, 0))
-        screen.blit(
-            txt,
-            (self.rect.x + (self.rect.w - txt.get_width()) // 2,
-             self.rect.y + (self.rect.h - txt.get_height()) // 2)
-        )
-
-    def click(self, pos):
-        return self.rect.collidepoint(pos)
-
-def dibujar_graficas_pygame(screen, resultados):
-    screen.fill((25, 25, 25))
-    fuente_titulo = pygame.font.SysFont(None, 36)
-    fuente = pygame.font.SysFont(None, 22)
-
-    algoritmos = [r["algoritmo"] for r in resultados]
-    tiempos = [r["tiempo"] for r in resultados]
-    pasos = [r["pasos"] for r in resultados]
-    costos = [r["costo"] for r in resultados]
-
-    # Normalizar valores
-    def normalizar(valores, altura_max):
-        m = max(valores)
-        return [int((v / m) * altura_max) for v in valores]
-
-    h_t = normalizar(tiempos, 200)
-    h_p = normalizar(pasos, 200)
-    h_c = normalizar(costos, 200)
-
-    base_y = 450
-    ancho = 35
-    separacion = 60
-
-    # Posiciones base
-    bases_x = [40, 300, 560]
-
-    # ---- TITULOS ----
-    screen.blit(fuente_titulo.render("Tiempo", True, (255,255,255)), (120, 50))
-    screen.blit(fuente_titulo.render("Pasos", True, (255,255,255)), (380, 50))
-    screen.blit(fuente_titulo.render("Costo", True, (255,255,255)), (635, 50))
-
-    for i, alg in enumerate(algoritmos):
-
-        # Tiempo
-        pygame.draw.rect(
-            screen, (0, 140, 255),
-            (bases_x[0] + i*separacion, base_y - h_t[i], ancho, h_t[i])
-        )
-
-        # Pasos
-        pygame.draw.rect(
-            screen, (0, 255, 150),
-            (bases_x[1] + i*separacion, base_y - h_p[i], ancho, h_p[i])
-        )
-
-        # Costo
-        pygame.draw.rect(
-            screen, (255, 160, 0),
-            (bases_x[2] + i*separacion, base_y - h_c[i], ancho, h_c[i])
-        )
-
-        # Etiquetas
-        txt = fuente.render(alg, True, (255,255,255))
-        screen.blit(txt, (bases_x[0] + i*separacion, base_y + 8))
-        screen.blit(txt, (bases_x[1] + i*separacion, base_y + 8))
-        screen.blit(txt, (bases_x[2] + i*separacion, base_y + 8))
-
+# --------------------------------------------------
+# Selección de laberinto
+# --------------------------------------------------
 
 def seleccionar_laberinto(screen):
     fuente = pygame.font.SysFont(None, 32)
@@ -161,6 +58,10 @@ def seleccionar_laberinto(screen):
 
         pygame.display.flip()
 
+# --------------------------------------------------
+# Menú principal
+# --------------------------------------------------
+
 def menu_principal(screen):
     fuente = pygame.font.SysFont(None, 40)
 
@@ -185,6 +86,10 @@ def menu_principal(screen):
 
         pygame.display.flip()
 
+# --------------------------------------------------
+# Mostrar métricas de los algoritmos
+# --------------------------------------------------  
+
 def mostrar_resultados_texto(screen, resultados, mejor):
     fuente = pygame.font.SysFont(None, 24)
     x = 20
@@ -199,13 +104,17 @@ def mostrar_resultados_texto(screen, resultados, mejor):
         )
 
         if r == mejor:
-            color = (0, 255, 0)      # VERDE → método elegido
+            color = (255, 215, 0) # Dorado
         else:
-            color = (255, 255, 255)  # BLANCO → los demás
+            color = (255, 255, 255)  # BLANCO 
 
         render = fuente.render(texto, True, color)
         screen.blit(render, (x, y))
         y += 25
+
+# --------------------------------------------------
+# Bucle principal
+# --------------------------------------------------
 
 def main():
     pygame.init()
@@ -267,7 +176,7 @@ def main():
             boton_volver   = Boton("Volver",     620, 420, 150, 45, (180, 180, 180), "volver")
             boton_grafica  = Boton("Ver Gráfica",620, 475, 150, 45, (100, 150, 255), "grafica")
             boton_salir    = Boton("Salir",      620, 530, 150, 45, (200, 0, 0), "salir")
-
+    
 
             fuente_btn = pygame.font.SysFont(None, 28)
             clock = pygame.time.Clock()
@@ -280,25 +189,71 @@ def main():
             viendo = True
             indice_ruta = 0
 
+            seleccion_anterior = "MEJOR"
+
+            # Dropdown para seleccionar algoritmo (opcional)
+            opciones = ["MEJOR", "DFS", "BFS", "UCS", "A*"]
+            dropdown = Dropdown(450, 420, 150, 30, opciones, seleccion=0)
+
+
             while viendo:
                 screen.fill((0, 0, 0))
 
                 gui.draw_labyrinth()
 
                 # Dibujar robot en la posición actual
-                if ruta and indice_ruta < len(ruta):
-                    gui.draw_robot(ruta[indice_ruta])
-                    indice_ruta += 1
-                elif ruta:
-                    gui.draw_robot(ruta[-1])
+                seleccion = dropdown.opciones[dropdown.seleccion]
+
+                if seleccion != seleccion_anterior:
+                    indice_ruta = 0
+
+                if seleccion == "MEJOR":
+                    ruta_activa = mejor["ruta"]
+
+                    COLOR_MEJOR = (255, 215, 0) # Dorado
+
+                    gui.draw_path(ruta_activa, COLOR_MEJOR)
+
+                    if ruta_activa and indice_ruta < len(ruta_activa):
+                        gui.draw_robot(ruta_activa[indice_ruta])
+                        indice_ruta += 1
+                    elif ruta_activa:
+                        gui.draw_robot(ruta_activa[-1])
+
+                # -----------------------------------
+                # OTROS → pintar ruta + robot animado
+                # -----------------------------------
+                else:
+                    r_sel = next(r for r in resultados if r["algoritmo"] == seleccion)
+                    ruta_activa = r_sel["ruta"]
+
+                    color = {
+                        "DFS": (255, 0, 0),
+                        "BFS": (0, 255, 0),
+                        "UCS": (0, 150, 255),
+                        "A*":  (255, 255, 0)
+                    }[seleccion]
+
+                    # 🟢 Pintar TODA la ruta
+                    gui.draw_path(ruta_activa, color)
+
+                    # 🤖 Animar robot SOBRE la ruta
+                    if ruta_activa and indice_ruta < len(ruta_activa):
+                        gui.draw_robot(ruta_activa[indice_ruta])
+                        indice_ruta += 1
+                    elif ruta_activa:
+                        gui.draw_robot(ruta_activa[-1])
 
                 mostrar_resultados_texto(screen, resultados, mejor)
 
                 boton_volver.dibujar(screen, fuente_btn)
                 boton_grafica.dibujar(screen, fuente_btn)
                 boton_salir.dibujar(screen, fuente_btn)
+                dropdown.dibujar(screen, fuente_btn)
+
 
                 for event in pygame.event.get():
+                    dropdown.manejar_evento(event)
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         return
@@ -320,6 +275,8 @@ def main():
 
                 pygame.display.flip()
                 clock.tick(10)  # controla velocidad del robot
+                seleccion_anterior = seleccion
+
         # -------------------------
         # GRAFICAS
         # -------------------------

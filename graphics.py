@@ -38,6 +38,18 @@ class LabyrinthGraphics:
                      self.tile_size, self.tile_size)
                 )
 
+    def draw_path(self, ruta, color):
+        for (fila, col) in ruta:
+            x = col * self.tile_size + self.tile_size // 2
+            y = fila * self.tile_size + self.tile_size // 2
+            pygame.draw.circle(
+                self.screen,
+                color,
+                (x, y),
+                self.tile_size // 4
+            )
+
+
     def draw_robot(self, state):
         """Dibuja el robot en una posición."""
         r, c = state

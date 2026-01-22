@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Algoritmos de Búsqueda - Navegación Autónoma</title>
+    <style>
+        :root {
+            --primary-color: #002D62; /* Azul marino profundo */
+            --secondary-color: #F4F4F4; /* Gris muy claro */
+            --accent-color: #0056b3; /* Azul profesional */
+            --text-color: #333333;
+            --border-color: #CCCCCC;
+            --code-bg: #E8E8E8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #FFFFFF;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 { margin: 0; font-size: 1.8rem; }
+        h2 { border-left: 5px solid var(--primary-color); padding-left: 1rem; margin-top: 2rem; }
+
+        .section {
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+
+        .algorithm-card {
+            background-color: var(--secondary-color);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            border: 1px solid var(--border-color);
+        }
+
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--secondary-color);
+        }
+
+        /* Eliminación explícita de bordes redondeados */
+        * {
+            border-radius: 0 !important;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Análisis Académico del Sistema de Navegación Autónoma</h1>
+    <p>Algoritmos de Búsqueda en Entornos Laberínticos</p>
+</header>
+
+<div class="container">
+    
+    <div class="section">
+        <h2>Introducción y Contextualización</h2>
+        <p>
+            El presente documento detalla la implementación y análisis de un agente robótico virtual diseñado para la resolución de navegación en espacios discretizados. 
+            El sistema modela el entorno como una grilla donde se consideran no solo obstáculos, sino también la heterogeneidad del terreno mediante costos diferenciados.
+        </p>
+        <p>
+            Se han implementado cuatro algoritmos fundamentales clasificados en búsqueda no informada y búsqueda informada, evaluando su eficiencia en términos de pasos, costo total y tiempo de ejecución.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Modelado del Entorno</h2>
+        <p>
+            El entorno se gestiona mediante la clase <code>Labyrinth</code>, la cual codifica el espacio de estados en coordenadas <code>(r, c)</code>.
+        </p>
+        <ul>
+            <li><strong>Obstáculos (#):</strong> Celdas infranqueables.</li>
+            <li><strong>Terreno Plano (.):</strong> Costo unitario (1).</li>
+            <li><strong>Terreno Empinado (2):</strong> Costo de valor 2.</li>
+        </ul>
+        <p>
+            La transición de estados se define en <code>LabyrinthSearchProblem</code> mediante la función <code>get_successors</code>, que retorna los movimientos válidos y sus costos asociados en una vecindad de cuatro direcciones (ortogonal).
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Algoritmos Implementados</h2>
+
+        <div class="algorithm-card">
+            <h3>Búsqueda Primero en Profundidad (DFS)</h3>
+            <p><strong>Estrategia:</strong> Explora exhaustivamente ramas individuales mediante una pila (LIFO).</p>
+            <p><strong>Implementación:</strong> Utiliza una lista como pila para gestionar la frontera de exploración.</p>
+            <pre>
+# Fragmento de src/search.py
+frontier = [(problem.get_start_state(), [])]
+while frontier:
+    state, path = frontier.pop()
+    # ... expansión de nodos ...
+            </pre>
+            <p><strong>Observación:</strong> No garantiza optimalidad, como se evidenció en los escenarios "Dificil_2" y "Medio_1" con rutas significativamente más largas.</p>
+        </div>
+
+        <div class="algorithm-card">
+            <h3>Búsqueda Primero en Anchura (BFS)</h3>
+            <p><strong>Estrategia:</strong> Exploración por niveles mediante una cola (FIFO).</p>
+            <p><strong>Implementación:</strong> Utiliza <code>collections.deque</code> para una gestión eficiente de la cola.</p>
+            <pre>
+# Fragmento de src/search.py
+frontier = deque([(problem.get_start_state(), [])])
+while frontier:
+    state, path = frontier.popleft()
+    # ... expansión de nodos ...
+            </pre>
+            <p><strong>Observación:</strong> Garantiza la ruta con menor número de transiciones, pero no necesariamente el menor costo en terrenos heterogéneos.</p>
+        </div>
+
+        <div class="algorithm-card">
+            <h3>Búsqueda de Costo Uniforme (UCS)</h3>
+            <p><strong>Estrategia:</strong> Expande el nodo con el menor costo acumulado <code>g(n)</code>.</p>
+            <p><strong>Implementación:</strong> Emplea <code>heapq</code> (cola de prioridad) para seleccionar siempre el estado más económico.</p>
+            <pre>
+# Fragmento de src/search.py
+frontier = []
+heapq.heappush(frontier, (0, problem.get_start_state(), []))
+# ...
+cost_so_far, state, path = heapq.heappop(frontier)
+            </pre>
+            <p><strong>Observación:</strong> Garantiza la ruta óptima considerando los costos de terreno (1 y 2).</p>
+        </div>
+
+        <div class="algorithm-card">
+            <h3>Algoritmo A*</h3>
+            <p><strong>Estrategia:</strong> Búsqueda informada mediante la función de evaluación <code>f(n) = g(n) + h(n)</code>.</p>
+            <p><strong>Heurística:</strong> Distancia Manhattan <code>D = |x₁ - x₂| + |y₁ - y₂|</code>, la cual es admisible y consistente para este dominio.</p>
+            <pre>
+# Fragmento de src/search.py
+heuristic = manhattan(next_state, problem.labyrinth.goal_pos)
+new_priority = new_cost + heuristic
+heapq.heappush(frontier, (new_priority, next_state, new_path, new_cost))
+            </pre>
+            <p><strong>Observación:</strong> Optimiza el espacio de búsqueda. Aunque en algunos escenarios el tiempo de cálculo de la heurística puede ser ligeramente superior a UCS, su eficiencia en estados explorados es mayor.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Análisis de Resultados Empíricos</h2>
+        <p>Los experimentos realizados en diversos escenarios confirman las propiedades teóricas de los algoritmos:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Escenario</th>
+                    <th>Algoritmo</th>
+                    <th>Pasos</th>
+                    <th>Costo</th>
+                    <th>Eficiencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Dificil_1</td>
+                    <td>DFS</td>
+                    <td>94</td>
+                    <td>100</td>
+                    <td>Subóptimo</td>
+                </tr>
+                <tr>
+                    <td>Dificil_1</td>
+                    <td>A*, UCS, BFS</td>
+                    <td>82</td>
+                    <td>88</td>
+                    <td>Óptimo</td>
+                </tr>
+                <tr>
+                    <td>Medio_1</td>
+                    <td>DFS</td>
+                    <td>152</td>
+                    <td>-</td>
+                    <td>Muy Ineficiente</td>
+                </tr>
+                <tr>
+                    <td>Medio_1</td>
+                    <td>A*, UCS, BFS</td>
+                    <td>58</td>
+                    <td>58</td>
+                    <td>Óptimo (Evita pendientes)</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>
+            La convergencia de A*, UCS y BFS hacia la misma solución en términos de costo valida la implementación del modelo de transición y la admisibilidad de la heurística Manhattan.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Conclusiones</h2>
+        <p>
+            La investigación demuestra que para sistemas de navegación donde el costo operativo es crítico, los algoritmos informados como A* ofrecen el mejor equilibrio entre rendimiento y optimalidad. 
+            DFS, si bien es útil para encontrar cualquier solución rápidamente en espacios profundos, no es apto para planificación de trayectorias eficientes en entornos con costos variables.
+        </p>
+    </div>
+
+</div>
+
+<div class="footer">
+    <p>Escuela Politécnica Nacional | Facultad de Ingeniería de Sistemas | Inteligencia Artificial</p>
+</div>
+
+</body>
+</html>

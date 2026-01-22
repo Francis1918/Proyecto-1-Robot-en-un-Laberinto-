@@ -3,268 +3,814 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis de Algoritmos de Búsqueda - Navegación Autónoma</title>
+    <title>🤖 Robot en un Laberinto - Algoritmos de Búsqueda</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Fira+Code&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #002D62; /* Azul marino profundo */
-            --secondary-color: #F4F4F4; /* Gris muy claro */
-            --accent-color: #0056b3; /* Azul profesional */
-            --text-color: #333333;
-            --border-color: #CCCCCC;
-            --code-bg: #E8E8E8;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: #FFFFFF;
-            margin: 0;
-            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
         }
 
+        /* Partículas animadas de fondo */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Header con gradiente animado */
         header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 2rem 0;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            padding: 3rem 2rem;
             text-align: center;
-            border-bottom: 5px solid var(--accent-color);
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        header .subtitle {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+
+        header .robot-emoji {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 1rem;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Contenedor principal */
         .container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
-        h1, h2, h3 {
-            color: var(--primary-color);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        h1 { margin: 0; font-size: 1.8rem; }
-        h2 { border-left: 5px solid var(--primary-color); padding-left: 1rem; margin-top: 2rem; }
-
+        /* Secciones con efecto glassmorphism */
         .section {
-            margin-bottom: 3rem;
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section h2::before {
+            content: '';
+            width: 5px;
+            height: 35px;
+            background: linear-gradient(180deg, #23d5ab, #23a6d5);
+            border-radius: 5px;
+        }
+
+        /* Tarjetas de algoritmos */
+        .algorithms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
         }
 
         .algorithm-card {
-            background-color: var(--secondary-color);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid var(--primary-color);
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 20px;
+            padding: 1.8rem;
+            border: 2px solid transparent;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
         }
 
+        .algorithm-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-color);
+        }
+
+        .algorithm-card:hover {
+            transform: scale(1.03);
+            border-color: var(--card-color);
+            box-shadow: 0 0 30px rgba(var(--card-color-rgb), 0.3);
+        }
+
+        .algorithm-card.dfs {
+            --card-color: #ff6b6b;
+            --card-color-rgb: 255, 107, 107;
+        }
+
+        .algorithm-card.bfs {
+            --card-color: #4ecdc4;
+            --card-color-rgb: 78, 205, 196;
+        }
+
+        .algorithm-card.ucs {
+            --card-color: #ffe66d;
+            --card-color-rgb: 255, 230, 109;
+        }
+
+        .algorithm-card.astar {
+            --card-color: #a855f7;
+            --card-color-rgb: 168, 85, 247;
+        }
+
+        .algorithm-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--card-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .algorithm-card .icon {
+            font-size: 2rem;
+        }
+
+        .algorithm-card .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: var(--card-color);
+            color: #1a1a2e;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .algorithm-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            opacity: 0.9;
+            margin-bottom: 0.8rem;
+        }
+
+        /* Código con estilo */
         pre {
-            background-color: var(--code-bg);
-            padding: 1rem;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 1.2rem;
             overflow-x: auto;
-            font-family: 'Consolas', 'Courier New', monospace;
-            border: 1px solid var(--border-color);
-        }
-
-        code {
-            font-family: 'Consolas', 'Courier New', monospace;
-            background-color: var(--code-bg);
-            padding: 0.2rem 0.4rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            border-left: 4px solid var(--card-color, #23d5ab);
             margin: 1rem 0;
         }
 
-        th, td {
-            border: 1px solid var(--border-color);
-            padding: 0.75rem;
-            text-align: left;
+        code {
+            font-family: 'Fira Code', monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            color: #23d5ab;
         }
 
-        th {
-            background-color: var(--primary-color);
-            color: white;
+        /* Arquitectura del proyecto */
+        .project-structure {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
 
-        tr:nth-child(even) {
-            background-color: #F9F9F9;
-        }
-
-        .footer {
+        .structure-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.2rem;
+            border-radius: 15px;
             text-align: center;
-            padding: 2rem;
-            font-size: 0.9rem;
-            color: #666;
-            border-top: 1px solid var(--border-color);
-            background-color: var(--secondary-color);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Eliminación explícita de bordes redondeados */
-        * {
-            border-radius: 0 !important;
+        .structure-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .structure-item .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .structure-item h4 {
+            color: #23d5ab;
+            margin-bottom: 0.3rem;
+        }
+
+        .structure-item p {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        /* Tabla de resultados */
+        .results-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .results-table th {
+            background: linear-gradient(135deg, #23a6d5, #23d5ab);
+            color: #1a1a2e;
+            padding: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .results-table td {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .results-table tr:hover td {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .results-table .optimal {
+            color: #23d5ab;
+            font-weight: 600;
+        }
+
+        .results-table .suboptimal {
+            color: #ff6b6b;
+        }
+
+        /* Terrenos */
+        .terrains-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .terrain-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .terrain-card:hover {
+            border-color: var(--terrain-color);
+        }
+
+        .terrain-card.wall {
+            --terrain-color: #ff6b6b;
+        }
+
+        .terrain-card.flat {
+            --terrain-color: #4ecdc4;
+        }
+
+        .terrain-card.steep {
+            --terrain-color: #ffe66d;
+        }
+
+        .terrain-card .symbol {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--terrain-color);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .terrain-card h4 {
+            margin: 0.5rem 0;
+            color: var(--terrain-color);
+        }
+
+        /* Timeline de ejecución */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin-top: 1.5rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #23a6d5, #23d5ab, #a855f7);
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 1rem 0 1rem 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -34px;
+            top: 1.2rem;
+            width: 12px;
+            height: 12px;
+            background: #23d5ab;
+            border-radius: 50%;
+            border: 3px solid #1a1a2e;
+        }
+
+        .timeline-item h4 {
+            color: #23d5ab;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Conclusiones */
+        .conclusions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .conclusion-card {
+            background: linear-gradient(145deg, rgba(168, 85, 247, 0.2), rgba(35, 166, 213, 0.1));
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .conclusion-card .number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a855f7, #23a6d5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        footer .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #23d5ab, #23a6d5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        footer p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* Animaciones de entrada */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2rem; }
+            .terrains-grid { grid-template-columns: 1fr; }
+            .algorithms-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Highlight para heurística */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(35, 166, 213, 0.1));
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .formula {
+            font-size: 1.5rem;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-family: 'Fira Code', monospace;
+            color: #ffe66d;
+        }
+
+        /* Lista estilizada */
+        .styled-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .styled-list li {
+            padding: 0.8rem 0;
+            padding-left: 2rem;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .styled-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #23d5ab;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
+<!-- Partículas de fondo -->
+<div class="particles">
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 40%; animation-delay: 1s;"></div>
+    <div class="particle" style="left: 50%; animation-delay: 3s;"></div>
+    <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+    <div class="particle" style="left: 70%; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 80%; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 1s;"></div>
+</div>
+
 <header>
-    <h1>Análisis Académico del Sistema de Navegación Autónoma</h1>
-    <p>Algoritmos de Búsqueda en Entornos Laberínticos</p>
+    <span class="robot-emoji">🤖</span>
+    <h1>Robot en un Laberinto</h1>
+    <p class="subtitle">Análisis de Algoritmos de Búsqueda para Navegación Autónoma</p>
 </header>
 
 <div class="container">
-    
-    <div class="section">
-        <h2>Introducción y Contextualización</h2>
-        <p>
-            El presente documento detalla la implementación y análisis de un agente robótico virtual diseñado para la resolución de navegación en espacios discretizados. 
-            El sistema modela el entorno como una grilla donde se consideran no solo obstáculos, sino también la heterogeneidad del terreno mediante costos diferenciados.
+
+    <!-- Introducción -->
+    <div class="section fade-in">
+        <h2>🎯 Descripción del Proyecto</h2>
+        <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            Este proyecto implementa un <strong>agente robótico virtual</strong> capaz de navegar autónomamente a través de laberintos utilizando diferentes algoritmos de búsqueda. El sistema visualiza en tiempo real cómo el robot explora y encuentra el camino óptimo desde el punto de inicio <code>S</code> hasta la meta <code>G</code>.
         </p>
-        <p>
-            Se han implementado cuatro algoritmos fundamentales clasificados en búsqueda no informada y búsqueda informada, evaluando su eficiencia en términos de pasos, costo total y tiempo de ejecución.
-        </p>
-    </div>
 
-    <div class="section">
-        <h2>Modelado del Entorno</h2>
-        <p>
-            El entorno se gestiona mediante la clase <code>Labyrinth</code>, la cual codifica el espacio de estados en coordenadas <code>(r, c)</code>.
-        </p>
-        <ul>
-            <li><strong>Obstáculos (#):</strong> Celdas infranqueables.</li>
-            <li><strong>Terreno Plano (.):</strong> Costo unitario (1).</li>
-            <li><strong>Terreno Empinado (2):</strong> Costo de valor 2.</li>
-        </ul>
-        <p>
-            La transición de estados se define en <code>LabyrinthSearchProblem</code> mediante la función <code>get_successors</code>, que retorna los movimientos válidos y sus costos asociados en una vecindad de cuatro direcciones (ortogonal).
-        </p>
-    </div>
-
-    <div class="section">
-        <h2>Algoritmos Implementados</h2>
-
-        <div class="algorithm-card">
-            <h3>Búsqueda Primero en Profundidad (DFS)</h3>
-            <p><strong>Estrategia:</strong> Explora exhaustivamente ramas individuales mediante una pila (LIFO).</p>
-            <p><strong>Implementación:</strong> Utiliza una lista como pila para gestionar la frontera de exploración.</p>
-            <pre>
-# Fragmento de src/search.py
-frontier = [(problem.get_start_state(), [])]
-while frontier:
-    state, path = frontier.pop()
-    # ... expansión de nodos ...
-            </pre>
-            <p><strong>Observación:</strong> No garantiza optimalidad, como se evidenció en los escenarios "Dificil_2" y "Medio_1" con rutas significativamente más largas.</p>
-        </div>
-
-        <div class="algorithm-card">
-            <h3>Búsqueda Primero en Anchura (BFS)</h3>
-            <p><strong>Estrategia:</strong> Exploración por niveles mediante una cola (FIFO).</p>
-            <p><strong>Implementación:</strong> Utiliza <code>collections.deque</code> para una gestión eficiente de la cola.</p>
-            <pre>
-# Fragmento de src/search.py
-frontier = deque([(problem.get_start_state(), [])])
-while frontier:
-    state, path = frontier.popleft()
-    # ... expansión de nodos ...
-            </pre>
-            <p><strong>Observación:</strong> Garantiza la ruta con menor número de transiciones, pero no necesariamente el menor costo en terrenos heterogéneos.</p>
-        </div>
-
-        <div class="algorithm-card">
-            <h3>Búsqueda de Costo Uniforme (UCS)</h3>
-            <p><strong>Estrategia:</strong> Expande el nodo con el menor costo acumulado <code>g(n)</code>.</p>
-            <p><strong>Implementación:</strong> Emplea <code>heapq</code> (cola de prioridad) para seleccionar siempre el estado más económico.</p>
-            <pre>
-# Fragmento de src/search.py
-frontier = []
-heapq.heappush(frontier, (0, problem.get_start_state(), []))
-# ...
-cost_so_far, state, path = heapq.heappop(frontier)
-            </pre>
-            <p><strong>Observación:</strong> Garantiza la ruta óptima considerando los costos de terreno (1 y 2).</p>
-        </div>
-
-        <div class="algorithm-card">
-            <h3>Algoritmo A*</h3>
-            <p><strong>Estrategia:</strong> Búsqueda informada mediante la función de evaluación <code>f(n) = g(n) + h(n)</code>.</p>
-            <p><strong>Heurística:</strong> Distancia Manhattan <code>D = |x₁ - x₂| + |y₁ - y₂|</code>, la cual es admisible y consistente para este dominio.</p>
-            <pre>
-# Fragmento de src/search.py
-heuristic = manhattan(next_state, problem.labyrinth.goal_pos)
-new_priority = new_cost + heuristic
-heapq.heappush(frontier, (new_priority, next_state, new_path, new_cost))
-            </pre>
-            <p><strong>Observación:</strong> Optimiza el espacio de búsqueda. Aunque en algunos escenarios el tiempo de cálculo de la heurística puede ser ligeramente superior a UCS, su eficiencia en estados explorados es mayor.</p>
+        <div class="project-structure">
+            <div class="structure-item">
+                <div class="icon">📁</div>
+                <h4>src/</h4>
+                <p>Lógica de búsqueda y laberinto</p>
+            </div>
+            <div class="structure-item">
+                <div class="icon">🎨</div>
+                <h4>gui/</h4>
+                <p>Interfaz gráfica con Pygame</p>
+            </div>
+            <div class="structure-item">
+                <div class="icon">📊</div>
+                <h4>utils/</h4>
+                <p>Evaluación y métricas</p>
+            </div>
+            <div class="structure-item">
+                <div class="icon">🗺️</div>
+                <h4>data/</h4>
+                <p>Mapas de laberintos</p>
+            </div>
         </div>
     </div>
 
-    <div class="section">
-        <h2>Análisis de Resultados Empíricos</h2>
-        <p>Los experimentos realizados en diversos escenarios confirman las propiedades teóricas de los algoritmos:</p>
-        <table>
+    <!-- Modelado del Entorno -->
+    <div class="section fade-in">
+        <h2>🌍 Modelado del Entorno</h2>
+        <p style="margin-bottom: 1rem;">
+            El entorno se representa como una <strong>grilla 2D</strong> donde cada celda puede ser un obstáculo o un tipo de terreno con diferente costo de movimiento. La clase <code>Labyrinth</code> gestiona esta representación.
+        </p>
+
+        <div class="terrains-grid">
+            <div class="terrain-card wall">
+                <div class="symbol">#</div>
+                <h4>Obstáculo</h4>
+                <p>Celda infranqueable</p>
+            </div>
+            <div class="terrain-card flat">
+                <div class="symbol">.</div>
+                <h4>Terreno Plano</h4>
+                <p>Costo: 1</p>
+            </div>
+            <div class="terrain-card steep">
+                <div class="symbol">2</div>
+                <h4>Terreno Empinado</h4>
+                <p>Costo: 2</p>
+            </div>
+        </div>
+
+        <pre style="margin-top: 1.5rem;"><span style="color: #a855f7;"># src/labyrinth.py - Obtener costo del terreno</span>
+def get_cost(self, state):
+    r, c = state
+    char = self.grid[r][c]
+    if char == '2':
+        return 2  <span style="color: #4ecdc4;"># Terreno empinado</span>
+    return 1      <span style="color: #4ecdc4;"># Terreno plano</span></pre>
+    </div>
+
+    <!-- Algoritmos Implementados -->
+    <div class="section fade-in">
+        <h2>⚙️ Algoritmos de Búsqueda</h2>
+        <p style="margin-bottom: 1rem;">Se implementaron <strong>4 algoritmos</strong> clasificados en búsqueda no informada e informada:</p>
+
+        <div class="algorithms-grid">
+
+            <!-- DFS -->
+            <div class="algorithm-card dfs">
+                <h3><span class="icon">📚</span> DFS</h3>
+                <span class="badge">NO INFORMADO</span>
+                <p><strong>Búsqueda en Profundidad</strong></p>
+                <p>Explora exhaustivamente una rama antes de retroceder. Usa una <strong>pila (LIFO)</strong>.</p>
+                <pre>frontier = [(start, [])]
+state, path = frontier<span style="color: #ff6b6b;">.pop()</span>  # LIFO</pre>
+                <p style="color: #ff6b6b; font-weight: 600;">⚠️ No garantiza optimalidad</p>
+            </div>
+
+            <!-- BFS -->
+            <div class="algorithm-card bfs">
+                <h3><span class="icon">🌊</span> BFS</h3>
+                <span class="badge">NO INFORMADO</span>
+                <p><strong>Búsqueda en Anchura</strong></p>
+                <p>Explora por niveles. Usa una <strong>cola (FIFO)</strong> con <code>deque</code>.</p>
+                <pre>frontier = deque([(start, [])])
+state, path = frontier<span style="color: #4ecdc4;">.popleft()</span>  # FIFO</pre>
+                <p style="color: #4ecdc4; font-weight: 600;">✓ Menor número de pasos</p>
+            </div>
+
+            <!-- UCS -->
+            <div class="algorithm-card ucs">
+                <h3><span class="icon">💰</span> UCS</h3>
+                <span class="badge">NO INFORMADO</span>
+                <p><strong>Búsqueda de Costo Uniforme</strong></p>
+                <p>Expande el nodo con menor <strong>costo acumulado g(n)</strong>. Usa <code>heapq</code>.</p>
+                <pre>heapq.heappush(frontier,
+    (<span style="color: #ffe66d;">cost</span>, state, path))</pre>
+                <p style="color: #ffe66d; font-weight: 600;">✓ Óptimo considerando costos</p>
+            </div>
+
+            <!-- A* -->
+            <div class="algorithm-card astar">
+                <h3><span class="icon">⭐</span> A*</h3>
+                <span class="badge">INFORMADO</span>
+                <p><strong>Búsqueda A Estrella</strong></p>
+                <p>Combina costo real + heurística: <strong>f(n) = g(n) + h(n)</strong></p>
+                <pre>priority = cost + <span style="color: #a855f7;">manhattan</span>(state, goal)
+heapq.heappush(frontier, (priority, ...))</pre>
+                <p style="color: #a855f7; font-weight: 600;">✓ Óptimo y eficiente</p>
+            </div>
+        </div>
+
+        <!-- Heurística Manhattan -->
+        <div class="highlight-box" style="margin-top: 2rem;">
+            <h3 style="margin-bottom: 1rem; color: #a855f7;">📐 Heurística Manhattan</h3>
+            <p>Estima la distancia mínima entre dos puntos en una grilla sin considerar obstáculos:</p>
+            <div class="formula">
+                h(n) = |x₁ - x₂| + |y₁ - y₂|
+            </div>
+            <pre style="margin-top: 1rem;"><span style="color: #a855f7;"># src/search.py</span>
+def manhattan(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])</pre>
+        </div>
+    </div>
+
+    <!-- Flujo de Ejecución -->
+    <div class="section fade-in">
+        <h2>🔄 Flujo de Ejecución del Sistema</h2>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <h4>1. Carga del Laberinto</h4>
+                <p>Se lee el archivo .txt y se construye la grilla con <code>Labyrinth</code></p>
+            </div>
+            <div class="timeline-item">
+                <h4>2. Creación del Problema</h4>
+                <p><code>LabyrinthSearchProblem</code> define estados, acciones y costos</p>
+            </div>
+            <div class="timeline-item">
+                <h4>3. Ejecución de Algoritmos</h4>
+                <p>Se ejecutan DFS, BFS, UCS y A* sobre el mismo problema</p>
+            </div>
+            <div class="timeline-item">
+                <h4>4. Evaluación</h4>
+                <p><code>evaluar_algoritmo()</code> mide tiempo, pasos y costo total</p>
+            </div>
+            <div class="timeline-item">
+                <h4>5. Visualización</h4>
+                <p>La interfaz Pygame muestra el laberinto y anima la ruta encontrada</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="section fade-in">
+        <h2>📊 Resultados Experimentales</h2>
+        <p>Comparación del rendimiento de los algoritmos en diferentes escenarios:</p>
+
+        <table class="results-table">
             <thead>
                 <tr>
-                    <th>Escenario</th>
-                    <th>Algoritmo</th>
-                    <th>Pasos</th>
-                    <th>Costo</th>
-                    <th>Eficiencia</th>
+                    <th>🗺️ Escenario</th>
+                    <th>🔧 Algoritmo</th>
+                    <th>📏 Pasos</th>
+                    <th>💎 Costo</th>
+                    <th>📋 Eficiencia</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>Dificil_1</td>
+                    <td rowspan="2">Dificil_1</td>
                     <td>DFS</td>
-                    <td>94</td>
-                    <td>100</td>
-                    <td>Subóptimo</td>
+                    <td class="suboptimal">94</td>
+                    <td class="suboptimal">100</td>
+                    <td class="suboptimal">Subóptimo</td>
                 </tr>
                 <tr>
-                    <td>Dificil_1</td>
                     <td>A*, UCS, BFS</td>
-                    <td>82</td>
-                    <td>88</td>
-                    <td>Óptimo</td>
+                    <td class="optimal">82</td>
+                    <td class="optimal">88</td>
+                    <td class="optimal">✓ Óptimo</td>
                 </tr>
                 <tr>
-                    <td>Medio_1</td>
+                    <td rowspan="2">Medio_1</td>
                     <td>DFS</td>
-                    <td>152</td>
-                    <td>-</td>
-                    <td>Muy Ineficiente</td>
+                    <td class="suboptimal">152</td>
+                    <td class="suboptimal">—</td>
+                    <td class="suboptimal">Muy Ineficiente</td>
                 </tr>
                 <tr>
-                    <td>Medio_1</td>
                     <td>A*, UCS, BFS</td>
-                    <td>58</td>
-                    <td>58</td>
-                    <td>Óptimo (Evita pendientes)</td>
+                    <td class="optimal">58</td>
+                    <td class="optimal">58</td>
+                    <td class="optimal">✓ Óptimo</td>
+                </tr>
+                <tr>
+                    <td>Facil_1</td>
+                    <td>Todos</td>
+                    <td class="optimal">~20</td>
+                    <td class="optimal">~20</td>
+                    <td class="optimal">✓ Similar</td>
                 </tr>
             </tbody>
         </table>
-        <p>
-            La convergencia de A*, UCS y BFS hacia la misma solución en términos de costo valida la implementación del modelo de transición y la admisibilidad de la heurística Manhattan.
-        </p>
     </div>
 
-    <div class="section">
-        <h2>Conclusiones</h2>
-        <p>
-            La investigación demuestra que para sistemas de navegación donde el costo operativo es crítico, los algoritmos informados como A* ofrecen el mejor equilibrio entre rendimiento y optimalidad. 
-            DFS, si bien es útil para encontrar cualquier solución rápidamente en espacios profundos, no es apto para planificación de trayectorias eficientes en entornos con costos variables.
-        </p>
+    <!-- Conclusiones -->
+    <div class="section fade-in">
+        <h2>🎓 Conclusiones</h2>
+
+        <div class="conclusions">
+            <div class="conclusion-card">
+                <div class="number">01</div>
+                <h4 style="margin: 0.5rem 0;">A* es el Mejor</h4>
+                <p style="opacity: 0.8; font-size: 0.9rem;">Para entornos con costos variables, A* ofrece el mejor equilibrio entre optimalidad y eficiencia computacional.</p>
+            </div>
+            <div class="conclusion-card">
+                <div class="number">02</div>
+                <h4 style="margin: 0.5rem 0;">DFS No es Óptimo</h4>
+                <p style="opacity: 0.8; font-size: 0.9rem;">Aunque rápido para encontrar cualquier solución, no es apto para planificación de trayectorias eficientes.</p>
+            </div>
+            <div class="conclusion-card">
+                <div class="number">03</div>
+                <h4 style="margin: 0.5rem 0;">BFS para Pasos Mínimos</h4>
+                <p style="opacity: 0.8; font-size: 0.9rem;">Cuando todos los costos son iguales, BFS garantiza encontrar la ruta más corta en número de movimientos.</p>
+            </div>
+            <div class="conclusion-card">
+                <div class="number">04</div>
+                <h4 style="margin: 0.5rem 0;">UCS para Costos</h4>
+                <p style="opacity: 0.8; font-size: 0.9rem;">Cuando hay terrenos con diferentes costos, UCS encuentra el camino de menor costo total.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tecnologías -->
+    <div class="section fade-in">
+        <h2>🛠️ Tecnologías Utilizadas</h2>
+        <div class="project-structure">
+            <div class="structure-item">
+                <div class="icon">🐍</div>
+                <h4>Python 3.13</h4>
+                <p>Lenguaje principal</p>
+            </div>
+            <div class="structure-item">
+                <div class="icon">🎮</div>
+                <h4>Pygame</h4>
+                <p>Interfaz gráfica</p>
+            </div>
+            <div class="structure-item">
+                <div class="icon">📦</div>
+                <h4>heapq / deque</h4>
+                <p>Estructuras de datos</p>
+            </div>
+            <div class="structure-item">
+                <div class="icon">📈</div>
+                <h4>Matplotlib</h4>
+                <p>Gráficas de resultados</p>
+            </div>
+        </div>
     </div>
 
 </div>
 
-<div class="footer">
-    <p>Escuela Politécnica Nacional | Facultad de Ingeniería de Sistemas | Inteligencia Artificial</p>
-</div>
+<footer>
+    <div class="logo-text">🤖 Robot en un Laberinto</div>
+    <p>Escuela Politécnica Nacional | Facultad de Ingeniería de Sistemas</p>
+    <p>Inteligencia Artificial - Proyecto de Algoritmos de Búsqueda</p>
+    <p style="margin-top: 1rem; opacity: 0.5;">© 2026</p>
+</footer>
 
 </body>
 </html>

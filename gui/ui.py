@@ -8,6 +8,7 @@ import os
 # Estados de la aplicación
 MENU = "menu"
 SELECCION = "seleccion"
+MODO_VISUALIZACION = "modo_visualizacion"
 RESULTADOS = "resultados"
 GRAFICA = "grafica"
 
@@ -369,3 +370,92 @@ def seleccionar_laberinto_moderno(screen):
 
         pygame.display.flip()
         clock.tick(60)
+
+
+def seleccionar_modo_visualizacion(screen, nombre_laberinto):
+    """
+    Pantalla para seleccionar si ver todos los algoritmos o solo el mejor
+    """
+    clock = pygame.time.Clock()
+    fuente_titulo = pygame.font.SysFont("Arial", 28, bold=True)
+    fuente_subtitulo = pygame.font.SysFont("Arial", 20)
+    fuente_btn = pygame.font.SysFont("Arial", 20)
+
+    # Botones centrados
+    btn_ancho = 350
+    btn_alto = 55
+    centro_x = screen.get_width() // 2 - btn_ancho // 2
+
+    boton_todos = BotonModerno(
+        "Ver todos los algoritmos",
+        centro_x, 250, btn_ancho, btn_alto,
+        "primario", "todos"
+    )
+    boton_mejor = BotonModerno(
+        "Ver solo el mejor algoritmo",
+        centro_x, 330, btn_ancho, btn_alto,
+        "secundario", "mejor"
+    )
+    boton_volver = BotonModerno("<- Volver", 20, 20, 100, 35, "neutral", "volver")
+
+    while True:
+        mouse_pos = pygame.mouse.get_pos()
+
+        # Fondo degradado
+        dibujar_fondo_degradado(screen, (25, 35, 60), (15, 20, 35))
+
+        # Título
+        txt_titulo = fuente_titulo.render("Como deseas visualizar?", True, COLORES["texto"])
+        screen.blit(txt_titulo, (screen.get_width() // 2 - txt_titulo.get_width() // 2, 80))
+
+        # Subtítulo con nombre del laberinto
+        txt_laberinto = fuente_subtitulo.render(
+            f"Laberinto seleccionado: {nombre_laberinto.replace('.txt', '')}",
+            True, COLORES["texto_secundario"]
+        )
+        screen.blit(txt_laberinto, (screen.get_width() // 2 - txt_laberinto.get_width() // 2, 130))
+
+        # Descripción de opciones
+        txt_desc1 = fuente_subtitulo.render(
+            "Elige una opcion:",
+            True, COLORES["texto"]
+        )
+        screen.blit(txt_desc1, (screen.get_width() // 2 - txt_desc1.get_width() // 2, 190))
+
+        # Actualizar y dibujar botones
+        boton_todos.actualizar(mouse_pos)
+        boton_mejor.actualizar(mouse_pos)
+        boton_volver.actualizar(mouse_pos)
+
+        boton_todos.dibujar(screen, fuente_btn)
+        boton_mejor.dibujar(screen, fuente_btn)
+        boton_volver.dibujar(screen, fuente_btn)
+
+        # Información adicional
+        fuente_info = pygame.font.SysFont("Arial", 14)
+        info_todos = fuente_info.render(
+            "Muestra las animaciones de DFS, BFS, UCS y A* secuencialmente",
+            True, COLORES["texto_secundario"]
+        )
+        info_mejor = fuente_info.render(
+            "Muestra solo la animacion del algoritmo mas eficiente",
+            True, COLORES["texto_secundario"]
+        )
+        screen.blit(info_todos, (screen.get_width() // 2 - info_todos.get_width() // 2, 410))
+        screen.blit(info_mejor, (screen.get_width() // 2 - info_mejor.get_width() // 2, 435))
+
+        # Eventos
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return None
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if boton_volver.click(event.pos):
+                    return "volver"
+                if boton_todos.click(event.pos):
+                    return "todos"
+                if boton_mejor.click(event.pos):
+                    return "mejor"
+
+        pygame.display.flip()
+        clock.tick(60)
+

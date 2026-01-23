@@ -8,10 +8,12 @@ COLOR_PLANO = (255, 255, 255)  # Blanco
 COLOR_EMPINADO = (200, 200, 200) # Gris (para diferenciar el costo 2)
 
 class LabyrinthGraphics:
-    def __init__(self, labyrinth, screen, tile_size=20):
+    def __init__(self, labyrinth, screen, tile_size=20, offset_x=0, offset_y=0):
         self.lab = labyrinth
         self.screen = screen
         self.tile_size = tile_size
+        self.offset_x = offset_x
+        self.offset_y = offset_y
         self.robot_img = pygame.image.load("assets/robot.png").convert_alpha()
         self.robot_img = pygame.transform.scale(
             self.robot_img,
@@ -20,8 +22,6 @@ class LabyrinthGraphics:
 
     def draw_labyrinth(self):
         """Dibuja el laberinto celda por celda."""
-        self.screen.fill((0, 0, 0))
-
         for r, fila in enumerate(self.lab.grid):
             for c, char in enumerate(fila):
                 color = COLOR_PLANO
@@ -34,14 +34,15 @@ class LabyrinthGraphics:
                 pygame.draw.rect(
                     self.screen, 
                     color, 
-                    (c * self.tile_size, r * self.tile_size, 
+                    (self.offset_x + c * self.tile_size,
+                     self.offset_y + r * self.tile_size,
                      self.tile_size, self.tile_size)
                 )
 
     def draw_path(self, ruta, color):
         for (fila, col) in ruta:
-            x = col * self.tile_size + self.tile_size // 2
-            y = fila * self.tile_size + self.tile_size // 2
+            x = self.offset_x + col * self.tile_size + self.tile_size // 2
+            y = self.offset_y + fila * self.tile_size + self.tile_size // 2
             pygame.draw.circle(
                 self.screen,
                 color,
@@ -55,5 +56,6 @@ class LabyrinthGraphics:
         r, c = state
         self.screen.blit(
             self.robot_img,
-            (c * self.tile_size, r * self.tile_size)
+            (self.offset_x + c * self.tile_size,
+             self.offset_y + r * self.tile_size)
         )

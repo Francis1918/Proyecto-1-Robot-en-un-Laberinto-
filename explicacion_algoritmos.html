@@ -774,6 +774,243 @@
             overflow-x: auto;
             border-left: 4px solid var(--modal-color);
         }
+
+        /* Estilos para la sección de animación de laberintos */
+        .maze-demo-section {
+            background: linear-gradient(145deg, rgba(168, 85, 247, 0.1), rgba(35, 166, 213, 0.1));
+            border: 2px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .maze-selector {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .maze-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .maze-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #23d5ab;
+        }
+
+        .maze-btn.active {
+            background: linear-gradient(135deg, #23a6d5, #23d5ab);
+            border-color: transparent;
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+
+        .maze-btn.facil { --btn-color: #4ecdc4; }
+        .maze-btn.medio { --btn-color: #ffe66d; }
+        .maze-btn.dificil { --btn-color: #ff6b6b; }
+
+        .animation-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .animation-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .maze-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .maze-panel.best {
+            border: 2px solid #23d5ab;
+            box-shadow: 0 0 20px rgba(35, 213, 171, 0.2);
+        }
+
+        .maze-panel.worst {
+            border: 2px solid #ff6b6b;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.2);
+        }
+
+        .maze-panel h4 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .maze-panel.best h4 { color: #23d5ab; }
+        .maze-panel.worst h4 { color: #ff6b6b; }
+
+        .maze-canvas {
+            background: #1a1a2e;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .maze-stats {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .stat-item span {
+            font-weight: 600;
+        }
+
+        .maze-panel.best .stat-item span { color: #23d5ab; }
+        .maze-panel.worst .stat-item span { color: #ff6b6b; }
+
+        .animation-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .control-btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn.play {
+            background: linear-gradient(135deg, #23a6d5, #23d5ab);
+            color: #1a1a2e;
+        }
+
+        .control-btn.play:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(35, 213, 171, 0.4);
+        }
+
+        .control-btn.reset {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .control-btn.reset:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .algo-label {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .algo-label.astar { background: #a855f7; color: #fff; }
+        .algo-label.dfs { background: #ff6b6b; color: #fff; }
+        .algo-label.bfs { background: #4ecdc4; color: #1a1a2e; }
+        .algo-label.ucs { background: #ffe66d; color: #1a1a2e; }
+
+        /* Filas clickeables de la tabla */
+        .clickable-row {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clickable-row:hover td {
+            background: rgba(35, 213, 171, 0.2) !important;
+            transform: scale(1.01);
+        }
+
+        .clickable-row:hover {
+            box-shadow: 0 0 15px rgba(35, 213, 171, 0.3);
+        }
+
+        /* Panel de demostración */
+        .maze-demo-panel {
+            margin-top: 2rem;
+            background: linear-gradient(145deg, rgba(168, 85, 247, 0.15), rgba(35, 166, 213, 0.1));
+            border: 2px solid rgba(35, 213, 171, 0.4);
+            border-radius: 20px;
+            padding: 2rem;
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .demo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .demo-header h3 {
+            color: #23d5ab;
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        .demo-header #mazeName {
+            color: #ffe66d;
+        }
+
+        .close-demo-btn {
+            background: rgba(255, 107, 107, 0.2);
+            border: 2px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .close-demo-btn:hover {
+            background: #ff6b6b;
+            color: #1a1a2e;
+        }
     </style>
 </head>
 
@@ -1039,7 +1276,7 @@ def manhattan(a, b):
         <!-- Resultados -->
         <div class="section fade-in">
             <h2>📊 Resultados Experimentales</h2>
-            <p>Comparación del rendimiento de los algoritmos en diferentes escenarios:</p>
+            <p>Comparación del rendimiento de los algoritmos. <strong style="color: #23d5ab;">Haz clic en cualquier fila</strong> para ver la animación del laberinto correspondiente:</p>
 
             <table class="results-table">
                 <thead>
@@ -1052,60 +1289,106 @@ def manhattan(a, b):
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td rowspan="2">Dificil_1</td>
+                    <tr class="clickable-row" onclick="showMazeDemo('Facil_1')">
+                        <td rowspan="2">Fácil_1</td>
                         <td>DFS</td>
-                        <td class="suboptimal">94</td>
-                        <td class="suboptimal">100</td>
+                        <td class="suboptimal">56</td>
+                        <td class="suboptimal">60</td>
                         <td class="suboptimal">Subóptimo</td>
                     </tr>
-                    <tr>
+                    <tr class="clickable-row" onclick="showMazeDemo('Facil_1')">
                         <td>A*, UCS, BFS</td>
-                        <td class="optimal">82</td>
-                        <td class="optimal">88</td>
+                        <td class="optimal">50</td>
+                        <td class="optimal">50</td>
                         <td class="optimal">✓ Óptimo</td>
                     </tr>
-                    <tr>
-                        <td rowspan="2">Dificil_2</td>
-                        <td>DFS</td>
-                        <td class="suboptimal">117</td>
-                        <td class="suboptimal">123</td>
-                        <td class="suboptimal">Subóptimo</td>
-                    </tr>
-                    <tr>
-                        <td>A*, UCS, BFS</td>
-                        <td class="optimal">85</td>
-                        <td class="optimal">88</td>
-                        <td class="optimal">✓ Óptimo</td>
-                    </tr>
-                    <tr>
+                    <tr class="clickable-row" onclick="showMazeDemo('Medio_1')">
                         <td rowspan="2">Medio_1</td>
                         <td>DFS</td>
                         <td class="suboptimal">152</td>
                         <td class="suboptimal">161</td>
                         <td class="suboptimal">Muy Ineficiente</td>
                     </tr>
-                    <tr>
+                    <tr class="clickable-row" onclick="showMazeDemo('Medio_1')">
                         <td>A*, UCS, BFS</td>
                         <td class="optimal">58</td>
                         <td class="optimal">58</td>
                         <td class="optimal">✓ Óptimo</td>
                     </tr>
-                    <tr>
-                        <td rowspan="2">Facil_1</td>
+                    <tr class="clickable-row" onclick="showMazeDemo('Dificil_1')">
+                        <td rowspan="2">Difícil_1</td>
                         <td>DFS</td>
-                        <td class="optimal">56</td>
-                        <td class="optimal">60</td>
-                        <td class="optimal">Subóptimo</td>
+                        <td class="suboptimal">94</td>
+                        <td class="suboptimal">100</td>
+                        <td class="suboptimal">Subóptimo</td>
                     </tr>
-                    <tr>
+                    <tr class="clickable-row" onclick="showMazeDemo('Dificil_1')">
                         <td>A*, UCS, BFS</td>
-                        <td class="optimal">50</td>
-                        <td class="optimal">50</td>
-                        <td class="optimal">Óptimo</td>
+                        <td class="optimal">82</td>
+                        <td class="optimal">88</td>
+                        <td class="optimal">✓ Óptimo</td>
+                    </tr>
+                    <tr class="clickable-row" onclick="showMazeDemo('Dificil_2')">
+                        <td rowspan="2">Difícil_2</td>
+                        <td>DFS</td>
+                        <td class="suboptimal">117</td>
+                        <td class="suboptimal">123</td>
+                        <td class="suboptimal">Subóptimo</td>
+                    </tr>
+                    <tr class="clickable-row" onclick="showMazeDemo('Dificil_2')">
+                        <td>A*, UCS, BFS</td>
+                        <td class="optimal">85</td>
+                        <td class="optimal">88</td>
+                        <td class="optimal">✓ Óptimo</td>
                     </tr>
                 </tbody>
             </table>
+
+            <p style="text-align: center; margin-top: 1rem; color: #23d5ab; font-size: 0.9rem;">
+                👆 <strong>Haz clic en cualquier fila para ver la demostración animada</strong>
+            </p>
+
+            <!-- Panel de Demostración (oculto por defecto) -->
+            <div id="mazeDemo" class="maze-demo-panel" style="display: none;">
+                <div class="demo-header">
+                    <h3 id="demoTitle">🎮 Demostración: <span id="mazeName">-</span></h3>
+                    <button class="close-demo-btn" onclick="closeMazeDemo()">✖ Cerrar</button>
+                </div>
+
+                <div class="animation-container">
+                    <!-- Panel Mejor Algoritmo -->
+                    <div class="maze-panel best">
+                        <span class="algo-label astar">⭐ A* (Mejor)</span>
+                        <h4>✨ Ruta Óptima</h4>
+                        <canvas id="bestCanvas" class="maze-canvas" width="400" height="200"></canvas>
+                        <div class="maze-stats">
+                            <div class="stat-item">Pasos: <span id="bestSteps">0</span></div>
+                            <div class="stat-item">Costo: <span id="bestCost">0</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Panel Peor Algoritmo -->
+                    <div class="maze-panel worst">
+                        <span class="algo-label dfs">📚 DFS (Peor)</span>
+                        <h4>⚠️ Ruta Subóptima</h4>
+                        <canvas id="worstCanvas" class="maze-canvas" width="400" height="200"></canvas>
+                        <div class="maze-stats">
+                            <div class="stat-item">Pasos: <span id="worstSteps">0</span></div>
+                            <div class="stat-item">Costo: <span id="worstCost">0</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animation-controls">
+                    <button class="control-btn play" onclick="startAnimation()">▶️ Iniciar Animación</button>
+                    <button class="control-btn reset" onclick="resetAnimation()">🔄 Reiniciar</button>
+                </div>
+
+                <p style="text-align: center; margin-top: 1rem; opacity: 0.7; font-size: 0.85rem;">
+                    💡 Observa cómo <strong style="color: #23d5ab;">A*</strong> encuentra la ruta más corta mientras
+                    <strong style="color: #ff6b6b;">DFS</strong> puede dar muchas vueltas innecesarias.
+                </p>
+            </div>
         </div>
 
         <!-- Conclusiones -->
@@ -1307,6 +1590,362 @@ def manhattan(a, b):
                 });
                 document.body.style.overflow = 'auto';
             }
+        });
+
+        // ========================================
+        // SISTEMA DE ANIMACIÓN DE LABERINTOS
+        // ========================================
+
+        // Laberintos REALES del proyecto (copiados de data/mazes/)
+        const mazes = {
+            'Facil_1': {
+                grid: [
+                    "########################################",
+                    "#S..................#.................G#",
+                    "#.################22#.##################",
+                    "#...................#.................#",
+                    "#.################22#.##################",
+                    "#...................#..................#",
+                    "#.################..#.##################",
+                    "#.....................................#",
+                    "########################################"
+                ],
+                best: { steps: 50, cost: 50 },
+                worst: { steps: 56, cost: 60 }
+            },
+            'Medio_1': {
+                grid: [
+                    "########################################",
+                    "#S.......#..............2222...........#",
+                    "#.######.#.##########################.#",
+                    "#........#.#........................#.#",
+                    "#.########.#.######################.#.#",
+                    "#............#............222.........#",
+                    "#.#######################.##############",
+                    "#..............#......................#",
+                    "#.############.#.####################.#",
+                    "#....222.......#..............222.....#",
+                    "#.############.#.####################.#",
+                    "#..............#......................#",
+                    "#.#######################.##############",
+                    "#..............#.................222..#",
+                    "#.############.#.####################.#",
+                    "#..............#......................#",
+                    "#.######################.###.###########",
+                    "#.........................#...........G#",
+                    "########################################"
+                ],
+                best: { steps: 58, cost: 58 },
+                worst: { steps: 152, cost: 161 }
+            },
+            'Dificil_1': {
+                grid: [
+                    "########################################",
+                    "#S..22....#.......#.....2222......#...#",
+                    "#.#######.#.#####.#.#############.#.#.#",
+                    "#.#.....#.#.#...#.#.#...........#.#.#.#",
+                    "#.#.###.#.#.#.#.#.#.#.#########.#.#.#.#",
+                    "#.#.#...#.#.#.#.#.#.#.#.......#.#.#.#.#",
+                    "#.#.#.###.#.#.#.#.#.#.#.#####.#.#.#.#.#",
+                    "#.#.#.#...#.#.#.#.#.#.#.#...#.#.#.#.#.#",
+                    "#.#.#.#.###.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+                    "#.#.#.#.....#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+                    "#.#.#.#######.#.#.#.#.#.#.#.#.#.#.#.#.#",
+                    "#.#.#.........#.#...#...#.#...#.#.#.#.#",
+                    "#.###########.#.#########.#####.#.#.#.#",
+                    "#.....22....#.#.........#.......#.#.#.#",
+                    "#.#########.#.#########.#########.#.#.#",
+                    "#.#.......#.#.#.......#.....2222..#.#.#",
+                    "#.#.#####.#.#.#.#####.###########.#.#.#",
+                    "#.#.#...#.#...#.#...#...........#.#.#.#",
+                    "#.#.###.#.#####.###.###########.#.#.#.#",
+                    "#...#...#.......#.......2222....#...G#",
+                    "########################################"
+                ],
+                best: { steps: 82, cost: 88 },
+                worst: { steps: 94, cost: 100 }
+            },
+            'Dificil_2': {
+                grid: [
+                    "########################################",
+                    "#S..............2222..............#...#",
+                    "#.###############################.#.#.#",
+                    "#.................#.............#.#.#.#",
+                    "#.###############.#.###########.#.#.#.#",
+                    "#.......222.......#.............#.#.#.#",
+                    "#.###############.#################.#.#",
+                    "#.................#...............#.#.#",
+                    "#.#################.###############.#.#",
+                    "#.....222...........#...............#.#",
+                    "#.#################.###############.#.#",
+                    "#.................#...............#.#.#",
+                    "#.#################.###############.#.#",
+                    "#.................#.......222.....#.#.#",
+                    "#.#################.###############.#.#",
+                    "#.................#...............#.#.#",
+                    "#.#################.###############.#.#",
+                    "#.................#.................#G#",
+                    "########################################"
+                ],
+                best: { steps: 85, cost: 88 },
+                worst: { steps: 117, cost: 123 }
+            }
+        };
+
+        let currentMaze = 'Facil_1';
+        let animationId = null;
+        let bestIndex = 0;
+        let worstIndex = 0;
+        let bestPath = [];
+        let worstPath = [];
+
+        // Colores
+        const COLORS = {
+            wall: '#1a1a2e',
+            floor: '#2d3748',
+            start: '#23d5ab',
+            goal: '#ff6b6b',
+            steep: '#805ad5',
+            bestPath: '#23d5ab',
+            worstPath: '#ff6b6b',
+            robot: '#ffe66d'
+        };
+
+        // Mostrar panel de demostración al hacer clic en la tabla
+        function showMazeDemo(mazeName) {
+            currentMaze = mazeName;
+            const demoPanel = document.getElementById('mazeDemo');
+            const mazeNameSpan = document.getElementById('mazeName');
+
+            demoPanel.style.display = 'block';
+            mazeNameSpan.textContent = mazeName.replace('_', ' ');
+
+            // Scroll suave hacia el panel
+            demoPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Resetear e iniciar animación automáticamente
+            resetAnimation();
+            setTimeout(() => startAnimation(), 500);
+        }
+
+        // Cerrar panel de demostración
+        function closeMazeDemo() {
+            const demoPanel = document.getElementById('mazeDemo');
+            demoPanel.style.display = 'none';
+
+            if (animationId) {
+                clearTimeout(animationId);
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+
+        // Encontrar posiciones de inicio y meta
+        function findPositions(grid) {
+            let start = null, goal = null;
+            for (let r = 0; r < grid.length; r++) {
+                for (let c = 0; c < grid[r].length; c++) {
+                    if (grid[r][c] === 'S') start = { r, c };
+                    if (grid[r][c] === 'G') goal = { r, c };
+                }
+            }
+            return { start, goal };
+        }
+
+        // Algoritmo BFS para encontrar camino óptimo (simula A*/BFS)
+        function findBestPath(grid, start, goal) {
+            const queue = [[start]];
+            const visited = new Set();
+            visited.add(`${start.r},${start.c}`);
+
+            while (queue.length > 0) {
+                const path = queue.shift();
+                const current = path[path.length - 1];
+
+                if (current.r === goal.r && current.c === goal.c) {
+                    return path;
+                }
+
+                const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                for (const [dr, dc] of directions) {
+                    const nr = current.r + dr;
+                    const nc = current.c + dc;
+                    const key = `${nr},${nc}`;
+
+                    if (nr >= 0 && nr < grid.length && nc >= 0 && nc < grid[0].length &&
+                        grid[nr][nc] !== '#' && !visited.has(key)) {
+                        visited.add(key);
+                        queue.push([...path, { r: nr, c: nc }]);
+                    }
+                }
+            }
+            return [];
+        }
+
+        // Algoritmo DFS para encontrar camino subóptimo (replica el comportamiento de Python)
+        function findWorstPath(grid, start, goal) {
+            const stack = [[start]];
+            const visited = new Set();
+
+            while (stack.length > 0) {
+                const path = stack.pop();
+                const current = path[path.length - 1];
+                const key = `${current.r},${current.c}`;
+
+                if (visited.has(key)) continue;
+                visited.add(key);
+
+                if (current.r === goal.r && current.c === goal.c) {
+                    return path;
+                }
+
+                // Orden igual que en Python: Arriba, Abajo, Izquierda, Derecha
+                // Como es LIFO, el último (Derecha) se explora primero
+                const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                for (const [dr, dc] of directions) {
+                    const nr = current.r + dr;
+                    const nc = current.c + dc;
+
+                    if (nr >= 0 && nr < grid.length && nc >= 0 && nc < grid[0].length &&
+                        grid[nr][nc] !== '#' && !visited.has(`${nr},${nc}`)) {
+                        stack.push([...path, { r: nr, c: nc }]);
+                    }
+                }
+            }
+            return [];
+        }
+
+        // Dibujar laberinto en canvas
+        function drawMaze(canvas, grid, path, currentIndex, pathColor) {
+            const ctx = canvas.getContext('2d');
+            const rows = grid.length;
+            const cols = grid[0].length;
+            const cellW = canvas.width / cols;
+            const cellH = canvas.height / rows;
+
+            // Limpiar canvas
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar celdas
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const char = grid[r][c];
+                    let color = COLORS.floor;
+
+                    if (char === '#') color = COLORS.wall;
+                    else if (char === 'S') color = COLORS.start;
+                    else if (char === 'G') color = COLORS.goal;
+                    else if (char === '2') color = COLORS.steep;
+
+                    ctx.fillStyle = color;
+                    ctx.fillRect(c * cellW, r * cellH, cellW - 1, cellH - 1);
+                }
+            }
+
+            // Dibujar ruta recorrida
+            ctx.fillStyle = pathColor;
+            ctx.globalAlpha = 0.6;
+            for (let i = 0; i < currentIndex && i < path.length; i++) {
+                const { r, c } = path[i];
+                ctx.beginPath();
+                ctx.arc(c * cellW + cellW / 2, r * cellH + cellH / 2, cellW / 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+
+            // Dibujar robot
+            if (currentIndex < path.length) {
+                const { r, c } = path[currentIndex];
+                ctx.fillStyle = COLORS.robot;
+                ctx.beginPath();
+                ctx.arc(c * cellW + cellW / 2, r * cellH + cellH / 2, cellW / 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Emoji de robot
+                ctx.font = `${cellW * 0.6}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🤖', c * cellW + cellW / 2, r * cellH + cellH / 2);
+            }
+        }
+
+
+        // Iniciar animación
+        function startAnimation() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+
+            const maze = mazes[currentMaze];
+            const grid = maze.grid;
+            const { start, goal } = findPositions(grid);
+
+            bestPath = findBestPath(grid, start, goal);
+            worstPath = findWorstPath(grid, start, goal);
+            bestIndex = 0;
+            worstIndex = 0;
+
+            // Actualizar estadísticas
+            document.getElementById('bestSteps').textContent = maze.best.steps;
+            document.getElementById('bestCost').textContent = maze.best.cost;
+            document.getElementById('worstSteps').textContent = maze.worst.steps;
+            document.getElementById('worstCost').textContent = maze.worst.cost;
+
+            animate();
+        }
+
+        // Animación
+        function animate() {
+            const maze = mazes[currentMaze];
+            const grid = maze.grid;
+
+            const bestCanvas = document.getElementById('bestCanvas');
+            const worstCanvas = document.getElementById('worstCanvas');
+
+            drawMaze(bestCanvas, grid, bestPath, bestIndex, COLORS.bestPath);
+            drawMaze(worstCanvas, grid, worstPath, worstIndex, COLORS.worstPath);
+
+            // Avanzar índices
+            if (bestIndex < bestPath.length) bestIndex++;
+            if (worstIndex < worstPath.length) worstIndex++;
+
+            // Continuar animación si no han terminado ambos
+            if (bestIndex < bestPath.length || worstIndex < worstPath.length) {
+                animationId = setTimeout(() => requestAnimationFrame(animate), 80);
+            }
+        }
+
+        // Reiniciar animación
+        function resetAnimation() {
+            if (animationId) {
+                clearTimeout(animationId);
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+
+            bestIndex = 0;
+            worstIndex = 0;
+
+            const maze = mazes[currentMaze];
+            const grid = maze.grid;
+
+            const bestCanvas = document.getElementById('bestCanvas');
+            const worstCanvas = document.getElementById('worstCanvas');
+
+            drawMaze(bestCanvas, grid, [], 0, COLORS.bestPath);
+            drawMaze(worstCanvas, grid, [], 0, COLORS.worstPath);
+
+            // Resetear estadísticas
+            document.getElementById('bestSteps').textContent = '0';
+            document.getElementById('bestCost').textContent = '0';
+            document.getElementById('worstSteps').textContent = '0';
+            document.getElementById('worstCost').textContent = '0';
+        }
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            resetAnimation();
         });
     </script>
 

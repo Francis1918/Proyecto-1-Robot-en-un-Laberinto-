@@ -1358,7 +1358,7 @@ def manhattan(a, b):
                 <div class="animation-container">
                     <!-- Panel Mejor Algoritmo -->
                     <div class="maze-panel best">
-                        <span class="algo-label astar">⭐ A* (Mejor)</span>
+                        <span class="algo-label astar" id="bestAlgoLabel">⭐ A* (Mejor)</span>
                         <h4>✨ Ruta Óptima</h4>
                         <canvas id="bestCanvas" class="maze-canvas" width="400" height="200"></canvas>
                         <div class="maze-stats">
@@ -1611,7 +1611,8 @@ def manhattan(a, b):
                     "########################################"
                 ],
                 best: { steps: 50, cost: 50 },
-                worst: { steps: 56, cost: 60 }
+                worst: { steps: 56, cost: 60 },
+                bestAlgo: 'BFS'
             },
             'Medio_1': {
                 grid: [
@@ -1636,7 +1637,8 @@ def manhattan(a, b):
                     "########################################"
                 ],
                 best: { steps: 58, cost: 58 },
-                worst: { steps: 152, cost: 161 }
+                worst: { steps: 152, cost: 161 },
+                bestAlgo: 'BFS'
             },
             'Dificil_1': {
                 grid: [
@@ -1663,7 +1665,8 @@ def manhattan(a, b):
                     "########################################"
                 ],
                 best: { steps: 82, cost: 88 },
-                worst: { steps: 94, cost: 100 }
+                worst: { steps: 94, cost: 100 },
+                bestAlgo: 'A*'
             },
             'Dificil_2': {
                 grid: [
@@ -1688,7 +1691,8 @@ def manhattan(a, b):
                     "########################################"
                 ],
                 best: { steps: 85, cost: 88 },
-                worst: { steps: 117, cost: 123 }
+                worst: { steps: 117, cost: 123 },
+                bestAlgo: 'BFS'
             }
         };
 
@@ -1716,9 +1720,20 @@ def manhattan(a, b):
             currentMaze = mazeName;
             const demoPanel = document.getElementById('mazeDemo');
             const mazeNameSpan = document.getElementById('mazeName');
+            const bestAlgoLabel = document.getElementById('bestAlgoLabel');
 
             demoPanel.style.display = 'block';
             mazeNameSpan.textContent = mazeName.replace('_', ' ');
+
+            // Actualizar etiqueta del mejor algoritmo según el laberinto
+            const maze = mazes[mazeName];
+            if (maze.bestAlgo === 'BFS') {
+                bestAlgoLabel.textContent = '🌊 BFS (Mejor)';
+                bestAlgoLabel.className = 'algo-label bfs';
+            } else {
+                bestAlgoLabel.textContent = '⭐ A* (Mejor)';
+                bestAlgoLabel.className = 'algo-label astar';
+            }
 
             // Scroll suave hacia el panel
             demoPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });

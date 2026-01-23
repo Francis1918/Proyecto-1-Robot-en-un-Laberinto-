@@ -661,6 +661,119 @@
         .code-number {
             color: #bd93f9;
         }
+
+        /* Modal para código completo */
+        .code-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .code-modal-overlay.active {
+            display: flex;
+            animation: fadeInModal 0.3s ease;
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .code-modal {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 2px solid var(--modal-color, #a855f7);
+            box-shadow: 0 0 50px rgba(var(--modal-color-rgb, 168, 85, 247), 0.3);
+            animation: slideInModal 0.3s ease;
+        }
+
+        @keyframes slideInModal {
+            from {
+                transform: scale(0.9) translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .code-modal.ucs {
+            --modal-color: #ffe66d;
+            --modal-color-rgb: 255, 230, 109;
+        }
+
+        .code-modal.astar {
+            --modal-color: #a855f7;
+            --modal-color-rgb: 168, 85, 247;
+        }
+
+        .code-modal .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-modal .modal-header h3 {
+            color: var(--modal-color);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .code-modal .modal-close {
+            background: rgba(255, 107, 107, 0.2);
+            border: none;
+            color: #ff6b6b;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .code-modal .modal-close:hover {
+            background: #ff6b6b;
+            color: #1a1a2e;
+            transform: rotate(90deg);
+        }
+
+        .code-modal pre {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            border-left: 4px solid var(--modal-color);
+        }
     </style>
 </head>
 
@@ -803,7 +916,7 @@ state, path = frontier<span style="color: #ff6b6b;">.pop()</span>  # LIFO</pre>
                     <span class="code-comment"># Guardamos el camino acumulado</span>
                     new_path = path + [state]
                     frontier.<span class="code-function">append</span>((next_state, new_path))
-    
+
     <span class="code-keyword">return</span> []  <span class="code-comment"># No se encontró ruta</span></pre>
                     </div>
                 </div>
@@ -861,117 +974,24 @@ state, path = frontier<span style="color: #4ecdc4;">.popleft()</span>  # FIFO</p
 
                 <!-- UCS -->
                 <div class="algorithm-card ucs">
-                    <h3 class="code-toggle" onclick="toggleCode('ucs-code')"><span class="icon">💰</span> UCS</h3>
+                    <h3 class="code-toggle" onclick="openModal('ucs-modal')"><span class="icon">💰</span> UCS</h3>
                     <span class="badge">NO INFORMADO</span>
                     <p><strong>Búsqueda de Costo Uniforme</strong></p>
                     <p>Expande el nodo con menor <strong>costo acumulado g(n)</strong>. Usa <code>heapq</code>.</p>
                     <pre>heapq.heappush(frontier,
     (<span style="color: #ffe66d;">cost</span>, state, path))</pre>
                     <p style="color: #ffe66d; font-weight: 600;">✓ Óptimo considerando costos</p>
-
-                    <!-- Panel de código expandible -->
-                    <div id="ucs-code" class="code-panel">
-                        <div class="code-header">
-                            <span>📄 src/search.py - uniform_cost_search()</span>
-                            <span class="close-btn" onclick="toggleCode('ucs-code')">✖ Cerrar</span>
-                        </div>
-                        <pre><span class="code-keyword">import</span> heapq
-
-<span class="code-keyword">def</span> <span class="code-function">uniform_cost_search</span>(problem):
-    <span class="code-string">"""</span>
-    <span class="code-string">Algoritmo UCS (Uniform Cost Search):</span>
-    <span class="code-string">Expande siempre el nodo con el menor costo acumulado.</span>
-    <span class="code-string">Considera el costo de los terrenos (plano = 1, empinado = 2).</span>
-    <span class="code-string">"""</span>
-    <span class="code-comment"># Cola de prioridad: (costo acumulado, estado, camino)</span>
-    frontier = []
-    heapq.<span class="code-function">heappush</span>(frontier, (<span class="code-number">0</span>, problem.get_start_state(), []))
-
-    <span class="code-comment"># Diccionario para guardar el menor costo encontrado por estado</span>
-    visited = {}
-
-    <span class="code-keyword">while</span> frontier:
-        cost_so_far, state, path = heapq.<span class="code-function">heappop</span>(frontier)
-
-        <span class="code-comment"># Verificamos si se alcanzó la meta</span>
-        <span class="code-keyword">if</span> problem.is_goal_state(state):
-            <span class="code-keyword">return</span> path + [state]
-
-        <span class="code-comment"># Expandimos si no se ha visitado o se encontró un costo menor</span>
-        <span class="code-keyword">if</span> state <span class="code-keyword">not in</span> visited <span class="code-keyword">or</span> cost_so_far < visited[state]:
-            visited[state] = cost_so_far
-
-            <span class="code-keyword">for</span> next_state, action, cost <span class="code-keyword">in</span> problem.get_successors(state):
-                new_cost = cost_so_far + cost
-                new_path = path + [state]
-                heapq.<span class="code-function">heappush</span>(frontier, (new_cost, next_state, new_path))
-
-    <span class="code-comment"># No se encontró una ruta</span>
-    <span class="code-keyword">return</span> []</pre>
-                    </div>
                 </div>
 
                 <!-- A* -->
                 <div class="algorithm-card astar">
-                    <h3 class="code-toggle" onclick="toggleCode('astar-code')"><span class="icon">⭐</span> A*</h3>
+                    <h3 class="code-toggle" onclick="openModal('astar-modal')"><span class="icon">⭐</span> A*</h3>
                     <span class="badge">INFORMADO</span>
                     <p><strong>Búsqueda A Estrella</strong></p>
                     <p>Combina costo real + heurística: <strong>f(n) = g(n) + h(n)</strong></p>
                     <pre>priority = cost + <span style="color: #a855f7;">manhattan</span>(state, goal)
 heapq.heappush(frontier, (priority, ...))</pre>
                     <p style="color: #a855f7; font-weight: 600;">✓ Óptimo y eficiente</p>
-
-                    <!-- Panel de código expandible -->
-                    <div id="astar-code" class="code-panel">
-                        <div class="code-header">
-                            <span>📄 src/search.py - a_star_search()</span>
-                            <span class="close-btn" onclick="toggleCode('astar-code')">✖ Cerrar</span>
-                        </div>
-                        <pre><span class="code-keyword">import</span> heapq
-
-<span class="code-keyword">def</span> <span class="code-function">manhattan</span>(a, b):
-    <span class="code-string">"""Heurística Manhattan: Estima la distancia entre dos puntos."""</span>
-    <span class="code-keyword">return</span> <span class="code-function">abs</span>(a[<span class="code-number">0</span>] - b[<span class="code-number">0</span>]) + <span class="code-function">abs</span>(a[<span class="code-number">1</span>] - b[<span class="code-number">1</span>])
-
-<span class="code-keyword">def</span> <span class="code-function">a_star_search</span>(problem):
-    <span class="code-string">"""</span>
-    <span class="code-string">Algoritmo A*:</span>
-    <span class="code-string">Combina UCS con una heurística (distancia Manhattan)</span>
-    <span class="code-string">para guiar la búsqueda de forma más eficiente.</span>
-    <span class="code-string">"""</span>
-    start = problem.get_start_state()
-
-    <span class="code-comment"># Cola de prioridad: (prioridad, estado, camino, costo acumulado)</span>
-    frontier = []
-    heapq.<span class="code-function">heappush</span>(frontier, (<span class="code-number">0</span>, start, [], <span class="code-number">0</span>))
-
-    visited = {}
-
-    <span class="code-keyword">while</span> frontier:
-        priority, state, path, cost_so_far = heapq.<span class="code-function">heappop</span>(frontier)
-
-        <span class="code-comment"># Verificamos si se alcanzó la meta</span>
-        <span class="code-keyword">if</span> problem.is_goal_state(state):
-            <span class="code-keyword">return</span> path + [state]
-
-        <span class="code-comment"># Expandimos el estado si es más barato que antes</span>
-        <span class="code-keyword">if</span> state <span class="code-keyword">not in</span> visited <span class="code-keyword">or</span> cost_so_far < visited[state]:
-            visited[state] = cost_so_far
-
-            <span class="code-keyword">for</span> next_state, action, cost <span class="code-keyword">in</span> problem.get_successors(state):
-                new_cost = cost_so_far + cost
-                heuristic = <span class="code-function">manhattan</span>(next_state, problem.labyrinth.goal_pos)
-                new_priority = new_cost + heuristic
-                new_path = path + [state]
-
-                heapq.<span class="code-function">heappush</span>(
-                    frontier,
-                    (new_priority, next_state, new_path, new_cost)
-                )
-
-    <span class="code-comment"># No se encontró una ruta</span>
-    <span class="code-keyword">return</span> []</pre>
-                    </div>
                 </div>
             </div>
 
@@ -1156,18 +1176,138 @@ def manhattan(a, b):
         <p style="margin-top: 1rem; opacity: 0.5;">© 2026</p>
     </footer>
 
+    <!-- Modal UCS -->
+    <div id="ucs-modal" class="code-modal-overlay" onclick="closeModalOnOverlay(event)">
+        <div class="code-modal ucs">
+            <div class="modal-header">
+                <h3>💰 uniform_cost_search()</h3>
+                <button class="modal-close" onclick="closeModal('ucs-modal')">✖</button>
+            </div>
+            <pre><span class="code-keyword">def</span> <span class="code-function">uniform_cost_search</span>(problem):
+    <span class="code-string">"""</span>
+    <span class="code-string">Algoritmo UCS (Uniform Cost Search):</span>
+    <span class="code-string">Expande siempre el nodo con el menor costo acumulado.</span>
+    <span class="code-string">Considera el costo de los terrenos (plano = 1, empinado = 2).</span>
+    <span class="code-string">"""</span>
+    <span class="code-comment"># Cola de prioridad: (costo acumulado, estado, camino)</span>
+    frontier = []
+    heapq.<span class="code-function">heappush</span>(frontier, (<span class="code-number">0</span>, problem.get_start_state(), []))
+
+    <span class="code-comment"># Diccionario para guardar el menor costo encontrado por estado</span>
+    visited = {}
+
+    <span class="code-keyword">while</span> frontier:
+        cost_so_far, state, path = heapq.<span class="code-function">heappop</span>(frontier)
+
+        <span class="code-comment"># Verificamos si se alcanzó la meta</span>
+        <span class="code-keyword">if</span> problem.is_goal_state(state):
+            <span class="code-keyword">return</span> path + [state]
+
+        <span class="code-comment"># Expandimos si no se ha visitado o se encontró un costo menor</span>
+        <span class="code-keyword">if</span> state <span class="code-keyword">not in</span> visited <span class="code-keyword">or</span> cost_so_far < visited[state]:
+            visited[state] = cost_so_far
+
+            <span class="code-keyword">for</span> next_state, action, cost <span class="code-keyword">in</span> problem.get_successors(state):
+                new_cost = cost_so_far + cost
+                new_path = path + [state]
+                heapq.<span class="code-function">heappush</span>(frontier, (new_cost, next_state, new_path))
+
+    <span class="code-comment"># No se encontró una ruta</span>
+    <span class="code-keyword">return</span> []</pre>
+        </div>
+    </div>
+
+    <!-- Modal A* -->
+    <div id="astar-modal" class="code-modal-overlay" onclick="closeModalOnOverlay(event)">
+        <div class="code-modal astar">
+            <div class="modal-header">
+                <h3>⭐ a_star_search()</h3>
+                <button class="modal-close" onclick="closeModal('astar-modal')">✖</button>
+            </div>
+            <pre><span class="code-keyword">def</span> <span class="code-function">a_star_search</span>(problem):
+    <span class="code-string">"""</span>
+    <span class="code-string">Algoritmo A*:</span>
+    <span class="code-string">Combina UCS con una heurística (distancia Manhattan)</span>
+    <span class="code-string">para guiar la búsqueda de forma más eficiente.</span>
+    <span class="code-string">"""</span>
+    start = problem.get_start_state()
+
+    <span class="code-comment"># Cola de prioridad: (prioridad, estado, camino, costo acumulado)</span>
+    frontier = []
+    heapq.<span class="code-function">heappush</span>(frontier, (<span class="code-number">0</span>, start, [], <span class="code-number">0</span>))
+
+    visited = {}
+
+    <span class="code-keyword">while</span> frontier:
+        priority, state, path, cost_so_far = heapq.<span class="code-function">heappop</span>(frontier)
+
+        <span class="code-comment"># Verificamos si se alcanzó la meta</span>
+        <span class="code-keyword">if</span> problem.is_goal_state(state):
+            <span class="code-keyword">return</span> path + [state]
+
+        <span class="code-comment"># Expandimos el estado si es más barato que antes</span>
+        <span class="code-keyword">if</span> state <span class="code-keyword">not in</span> visited <span class="code-keyword">or</span> cost_so_far < visited[state]:
+            visited[state] = cost_so_far
+
+            <span class="code-keyword">for</span> next_state, action, cost <span class="code-keyword">in</span> problem.get_successors(state):
+                new_cost = cost_so_far + cost
+                heuristic = <span class="code-function">manhattan</span>(next_state, problem.labyrinth.goal_pos)
+                new_priority = new_cost + heuristic
+                new_path = path + [state]
+
+                heapq.<span class="code-function">heappush</span>(
+                    frontier,
+                    (new_priority, next_state, new_path, new_cost)
+                )
+
+    <span class="code-comment"># No se encontró una ruta</span>
+    <span class="code-keyword">return</span> []</pre>
+        </div>
+    </div>
+
     <script>
+        // Toggle para DFS y BFS (paneles expandibles)
         function toggleCode(panelId) {
             const panel = document.getElementById(panelId);
             panel.classList.toggle('active');
 
-            // Cerrar otros paneles abiertos (opcional)
+            // Cerrar otros paneles abiertos
             document.querySelectorAll('.code-panel').forEach(p => {
                 if (p.id !== panelId && p.classList.contains('active')) {
                     p.classList.remove('active');
                 }
             });
         }
+
+        // Abrir modal para UCS y A*
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden'; // Evitar scroll del body
+        }
+
+        // Cerrar modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cerrar modal al hacer clic en el overlay
+        function closeModalOnOverlay(event) {
+            if (event.target.classList.contains('code-modal-overlay')) {
+                event.target.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.code-modal-overlay.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = 'auto';
+            }
+        });
     </script>
 
 </body>

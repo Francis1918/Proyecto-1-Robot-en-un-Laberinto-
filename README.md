@@ -40,21 +40,3 @@ Aplicación interactiva que simula un robot navegando a través de laberintos ut
     ├── Dificil_1.txt
     └── Dificil_2.txt
 ```
-
-## Requisitos
-```
-pygame
-```
-
-## Ejecución
-```bash
-pip install -r requirements.txt
-python main.py
-```
-
-## Uso
-1. Ejecutar `python main.py`
-2. Presionar "Iniciar"
-3. Seleccionar un laberinto
-4. Ver la visualización de rutas y métricas
-5. Comparar algoritmos con las gráficas
